@@ -16,14 +16,52 @@ function clickLoadCsvButton() {
   invoke('load_csv', {}).then(console.log).catch(console.error)
 }
 
-export default function Home() {
-  // const [data, setData] = useState({});
+// function MyPlot() {
+//   return <Plot data={
+//     [{
+//       x: [1, 2, 3],
+//       y: [4, 5, 6],
+//       type: 'scatter',
+//       mode: 'lines+markers',
+//       marker: { color: 'red' },
+//     },
+//     { type: 'bar', x: [1, 2, 3], y: [4, 5, 6] }
+//     ]
+//   } layout={{ width: 320, height: 240, title: 'A Fancy Plot' }}
+//   />;
+// }
 
-  async function f() {
-    const _ = await listen<any>("event-name", (event) => {
-      console.log(event.payload.data);
-    });
-  }
+function MyPlot(data) {
+  console.log(data);
+
+  let data2 =
+  [{
+    x: [1, 2, 3],
+    y: data.data,
+    type: 'scatter',
+    mode: 'lines+markers',
+    marker: { color: 'red' },
+  },
+  { type: 'bar', x: [1, 2, 3], y: data.data }
+  ];
+
+  return <Plot data={ data2 }
+  layout={{ width: 320, height: 240, title: 'A Fancy Plot' }}
+  />;
+}
+
+export default function Home() {
+  const [data, setData] = useState([7, 8, 9]);
+
+  useEffect(() => {
+    const _ = (async () => await listen<any>("event-name", (event) => {
+      // console.log("abc");
+      console.log(typeof(event.payload.data));
+      console.log(typeof(event.payload.shape));
+      const data = [Number(event.payload.data[0]), Number(event.payload.data[1]), Number(event.payload.data[2])];
+      setData(data);
+    }))();
+  });
 
   return (
     <>
@@ -84,19 +122,7 @@ export default function Home() {
           </a>
 
           <a className={styles.card}>
-            <Plot
-              data={[
-                {
-                  x: [1, 2, 3],
-                  y: [2, 6, 3],
-                  type: 'scatter',
-                  mode: 'lines+markers',
-                  marker: { color: 'red' },
-                },
-                { type: 'bar', x: [1, 2, 3], y: [2, 5, 3] },
-              ]}
-              layout={{ width: 320, height: 240, title: 'A Fancy Plot' }}
-            />
+            <MyPlot data={ data } />
           </a>
 
           <a
