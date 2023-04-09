@@ -4,19 +4,26 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && next export",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@tauri-apps/api": "^1.2.0",
     "@types/node": "18.15.11",
     "@types/react": "18.0.32",
     "@types/react-dom": "18.0.11",
     "eslint": "8.37.0",
     "eslint-config-next": "13.2.4",
     "next": "13.2.4",
+    "plotly.js": "^2.20.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-plotly.js": "^2.6.0",
     "typescript": "5.0.3"
+  },
+  "devDependencies": {
+    "@types/plotly.js": "^2.12.18",
+    "@types/react-plotly.js": "^2.6.0"
   }
 }

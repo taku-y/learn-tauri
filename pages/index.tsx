@@ -2,10 +2,29 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
+import { invoke } from '@tauri-apps/api/tauri'
+import { listen } from '@tauri-apps/api/event'
+import { useEffect, useState } from 'react'
+
+// import Plot from 'react-plotly.js';
+import dynamic from "next/dynamic";
+const Plot = dynamic(() => import("react-plotly.js"), { ssr: false, })
 
 const inter = Inter({ subsets: ['latin'] })
 
+function clickLoadCsvButton() {
+  invoke('load_csv', {}).then(console.log).catch(console.error)
+}
+
 export default function Home() {
+  // const [data, setData] = useState({});
+
+  async function f() {
+    const _ = await listen<any>("event-name", (event) => {
+      console.log(event.payload.data);
+    });
+  }
+
   return (
     <>
       <Head>
@@ -60,32 +79,24 @@ export default function Home() {
         </div>
 
         <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
+          <a className={styles.card}>
+            <button onClick={clickLoadCsvButton}>Load CSV</button>
           </a>
 
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
+          <a className={styles.card}>
+            <Plot
+              data={[
+                {
+                  x: [1, 2, 3],
+                  y: [2, 6, 3],
+                  type: 'scatter',
+                  mode: 'lines+markers',
+                  marker: { color: 'red' },
+                },
+                { type: 'bar', x: [1, 2, 3], y: [2, 5, 3] },
+              ]}
+              layout={{ width: 320, height: 240, title: 'A Fancy Plot' }}
+            />
           </a>
 
           <a
